@@ -134,3 +134,17 @@ SECRET_KEY=tu_clave_secreta
 ### 5. Inicializar la Base de Datos
 
 Asegúrate de que tu base de datos exista, y esté corriendo en el puerto predispuesto para correr, `postgresql` por defecto corre en el puerto 5432
+
+### 6. Correr el proyecto de FastAPI
+
+Utilizar el siguiente comando, para correr en un puerto especifico
+
+```bash
+uvicorn app.main:app --reload --port 8088
+```
+
+Si quieren correr en el puerto por default, utilizar este comando
+
+```bash
+uvicorn app.main:app --reload
+```
