@@ -1,5 +1,6 @@
 # Folders
 __pycache__/
+venv/
 # files
 .env
 id_ed25519_Desktop_Alejo
