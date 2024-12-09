@@ -2,9 +2,9 @@ from fastapi import FastAPI
 from app.routers import animales, cuidador
 
 app = FastAPI()
-
-app.include_router(animales.router, prefix="/animales", tags=["Animales"])
-app.include_router(cuidador.router, prefix="/cuidadores", tags=["Cuidadores"])
+version_api = '/v1/'
+app.include_router(animales.router, prefix=f"{version_api}animales", tags=["Animales"])
+app.include_router(cuidador.router, prefix=f"{version_api}cuidadores", tags=["Cuidadores"])
 
 @app.get("/")
 def root():
