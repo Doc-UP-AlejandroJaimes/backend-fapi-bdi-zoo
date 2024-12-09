@@ -25,8 +25,6 @@ def get_cuidador_endpoint(cuidador_id: int, db: Session = Depends(get_db)):
 
 @router.put("/{cuidador_id}", response_model=CuidadorSchema)
 def update_cuidador_endpoint(cuidador_id: int, cuidador_update: CuidadorUpdate, db: Session = Depends(get_db)):
-    print("Cuerpo recibido (crudo):", cuidador_update.dict(exclude_unset=True, by_alias=True))
-    print("Cuerpo recibido (sin alias):", cuidador_update.dict(exclude_unset=True, by_alias=False))
     return update_cuidador(db, cuidador_id, cuidador_update)
 
 @router.delete("/{cuidador_id}")
