@@ -15,3 +15,4 @@ class Cuidador(Base):
 
     # Relación con `Especialidad`
     especialidad = relationship("Especialidad", backref="cuidadores")
+    animales = relationship("Animales", back_populates="cuidador")
