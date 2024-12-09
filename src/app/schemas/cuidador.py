@@ -23,6 +23,11 @@ class CuidadorSchema(CuidadorBase):
     id: int
     especialidad: Especialidad
 
+class CuidadorAnimal(BaseModel):
+    id: int
+    nombre: str | None
+    especialidad: Especialidad
+
     class Config:
         from_attributes = True  # Habilitar mapeo desde modelos SQLAlchemy
         populate_by_name = True  # Usa nombres internos si es necesario
