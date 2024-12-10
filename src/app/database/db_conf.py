@@ -1,4 +1,3 @@
-# app/database/db_conf.py
 from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
@@ -7,10 +6,12 @@ class Settings(BaseSettings):
     db_name: str
     db_user: str
     db_password: str
-    app_env: str = "development"
+    app_env: str = "development"  # Valor predeterminado si no está en el entorno
     secret_key: str
 
     class Config:
-        env_file = ".env"
+        # Elimina la referencia al archivo .env
+        env_file = None  # Desactiva el archivo .env para AWS Lambda
 
+# Instancia global de configuración
 settings = Settings()

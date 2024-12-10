@@ -1,0 +1,33 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Despliegue de FastAPI en AWS con Lambda y API Gateway
+
+Resources:
+  ApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .  # Directorio actual del proyecto
+      Handler: app.main.handler  # Ruta al handler principal de tu Lambda
+      Runtime: python3.10  # Ajusta a la versión que estás utilizando
+      Environment:
+        Variables:
+          DB_HOST: "aws-postgresql-zoologico-fapi.cd84wk0cofjw.us-east-1.rds.amazonaws.com"
+          DB_PORT: "5432"
+          DB_NAME: "zoologico"
+          DB_USER: "adminzoo"
+          DB_PASSWORD: "zoo2024*"
+          APP_ENV: "production"
+          SECRET_KEY: "your_secret_key"
+      Events:
+        ApiGateway:
+          Type: Api  # Crea un API Gateway vinculado al Lambda
+          Properties:
+            Path: /{proxy+}  # Proxy para manejar todas las rutas
+            Method: ANY  # Permite todos los métodos HTTP
+
+Outputs:
+  ApiGatewayEndpoint:
+    Description: "URL de la API desplegada"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+    Export:
+      Name: "ApiGatewayEndpoint"
