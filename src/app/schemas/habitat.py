@@ -22,4 +22,11 @@ class HabitatAnimal(BaseModel):
     
     class Config:
         from_attributes = True
+
+class HabitatDropDown(BaseModel):
+    id: int
+    nombre: str
+    class Config:
+        from_attributes = True
+
         

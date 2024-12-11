@@ -1,33 +1,62 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: Despliegue de FastAPI en AWS con Lambda y API Gateway
+Description: Despliegue seguro de FastAPI en AWS Lambda con nombres personalizados
 
 Resources:
+  # Definición del Bucket S3
+  DeploymentBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: "fastapi-deployment-bucket-bdi-2024"
+      AccessControl: Private
+
+  # Definición de la Función Lambda
   ApiFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: .  # Directorio actual del proyecto
-      Handler: app.main.handler  # Ruta al handler principal de tu Lambda
-      Runtime: python3.10  # Ajusta a la versión que estás utilizando
+      FunctionName: "FastAPI-Lambda-BDI-2024"
+      Handler: app.main.handler
+      Runtime: python3.10
+      CodeUri: .
+      Timeout: 10
+      MemorySize: 128
       Environment:
         Variables:
-          DB_HOST: "aws-postgresql-zoologico-fapi.cd84wk0cofjw.us-east-1.rds.amazonaws.com"
-          DB_PORT: "5432"
-          DB_NAME: "zoologico"
-          DB_USER: "adminzoo"
-          DB_PASSWORD: "zoo2024*"
-          APP_ENV: "production"
-          SECRET_KEY: "your_secret_key"
+          DB_HOST: !Sub "{{resolve:secretsmanager:FastAPI-Tutorial-BDI-SM:SecretString:DB_HOST}}"
+          DB_PORT: !Sub "{{resolve:secretsmanager:FastAPI-Tutorial-BDI-SM:SecretString:DB_PORT}}"
+          DB_NAME: !Sub "{{resolve:secretsmanager:FastAPI-Tutorial-BDI-SM:SecretString:DB_NAME}}"
+          DB_USER: !Sub "{{resolve:secretsmanager:FastAPI-Tutorial-BDI-SM:SecretString:DB_USER}}"
+          DB_PASSWORD: !Sub "{{resolve:secretsmanager:FastAPI-Tutorial-BDI-SM:SecretString:DB_PASSWORD}}"
+          SECRET_KEY: !Sub "{{resolve:secretsmanager:FastAPI-Tutorial-BDI-SM:SecretString:SECRET_KEY}}"
+          APP_ENV: !Sub "{{resolve:secretsmanager:FastAPI-Tutorial-BDI-SM:SecretString:APP_ENV}}"
+      Policies:
+        - Version: "2012-10-17"
+          Statement:
+            - Effect: "Allow"
+              Action: 
+                - "secretsmanager:GetSecretValue"
+              Resource: !Sub "arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:FastAPI-Tutorial-BDI-SM"
       Events:
         ApiGateway:
-          Type: Api  # Crea un API Gateway vinculado al Lambda
+          Type: Api
           Properties:
-            Path: /{proxy+}  # Proxy para manejar todas las rutas
-            Method: ANY  # Permite todos los métodos HTTP
+            Path: /{proxy+} # Maneja todas las rutas dinámicas
+            Method: ANY
+        SwaggerDocs:
+          Type: Api
+          Properties:
+            Path: /docs # Maneja la documentación Swagger UI
+            Method: ANY
+        OpenApiJson:
+          Type: Api
+          Properties:
+            Path: /openapi.json # Maneja el esquema OpenAPI
+            Method: GET
 
 Outputs:
   ApiGatewayEndpoint:
-    Description: "URL de la API desplegada"
+    Description: "URL del API desplegada"
     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
-    Export:
-      Name: "ApiGatewayEndpoint"
+  DeploymentBucketName:
+    Description: "Nombre del Bucket de Despliegue"
+    Value: !Ref DeploymentBucket

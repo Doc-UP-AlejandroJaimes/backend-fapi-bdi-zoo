@@ -11,7 +11,8 @@ class Settings(BaseSettings):
 
     class Config:
         # Elimina la referencia al archivo .env
-        env_file = None  # Desactiva el archivo .env para AWS Lambda
+        env_file = ".env"  # Desactiva el archivo .env para AWS Lambda
+        #env_file = None  # Desactiva el archivo .env para AWS Lambda
 
 # Instancia global de configuración
 settings = Settings()

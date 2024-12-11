@@ -23,3 +23,9 @@ class EspecieAnimal(BaseModel):
     class Config:
         from_attributes = True
         populate_by_name = True
+
+class EspecieDropDown(BaseModel):
+    id: int
+    nombre: str
+    class Config:
+        from_attributes = True

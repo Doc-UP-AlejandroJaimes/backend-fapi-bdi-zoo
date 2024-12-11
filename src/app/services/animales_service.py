@@ -43,11 +43,19 @@ def get_animal_by_id(db: Session, animal_id: int) -> AnimalesModel:
 
 def get_animales_paginated(db: Session, page: int, page_size: int):
     """
-    Servicio para obtener animales con paginación.
+    Servicio para obtener animales con paginación ordenados por id descendente.
     """
     total = db.query(AnimalesModel).count()  # Total de registros en la tabla
     skip = (page - 1) * page_size  # Cálculo del offset basado en la página actual
-    animales = db.query(AnimalesModel).offset(skip).limit(page_size).all()  # Consulta paginada
+
+    # Consulta paginada y ordenada por id descendente
+    animales = (
+        db.query(AnimalesModel)
+        .order_by(AnimalesModel.id.desc())  # Orden descendente por id
+        .offset(skip)
+        .limit(page_size)
+        .all()
+    )
 
     return {
         "total": total,
@@ -55,6 +63,7 @@ def get_animales_paginated(db: Session, page: int, page_size: int):
         "page_size": page_size,
         "results": [Animales.from_orm(animal) for animal in animales]
     }
+
 
 def delete_animal (db: Session, animal_id: int) -> bool:
     db_animal = db.query(AnimalesModel).filter(AnimalesModel.id == animal_id).first()

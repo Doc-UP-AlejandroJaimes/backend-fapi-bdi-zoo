@@ -31,3 +31,9 @@ class CuidadorAnimal(BaseModel):
     class Config:
         from_attributes = True  # Habilitar mapeo desde modelos SQLAlchemy
         populate_by_name = True  # Usa nombres internos si es necesario
+
+class CuidadorDropDown(BaseModel):
+    id: int
+    nombre: str | None
+    class Config:
+        from_attributes = True  # Habilitar mapeo desde modelos SQLAlchemy

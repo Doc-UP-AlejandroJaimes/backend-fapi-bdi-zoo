@@ -2,7 +2,7 @@
 from sqlalchemy.orm import Session
 from app.models.especialidad import Especialidad as EspecialidadModel
 from app.models.cuidador import Cuidador
-from app.schemas.cuidador import CuidadorCreate, CuidadorSchema, CuidadorUpdate
+from app.schemas.cuidador import CuidadorCreate, CuidadorSchema, CuidadorUpdate, CuidadorDropDown
 from fastapi import HTTPException
 
 def create_cuidador(db: Session, cuidador: CuidadorCreate):
@@ -27,6 +27,16 @@ def get_cuidador_by_id(db: Session, cuidador_id: int) -> CuidadorSchema:
     if not cuidador:
         return None
     return cuidador
+
+def get_cuidadores(db: Session):
+    """
+    Servicio para obtener los cuidadores.
+    """
+    cuidadores = db.query(Cuidador).all()
+
+    return {
+        "results": [CuidadorDropDown.from_orm(cuidador) for cuidador in cuidadores]
+    }
 
 def update_cuidador(db: Session, cuidador_id: int, cuidador_update: CuidadorUpdate):
     cuidador = db.query(Cuidador).filter(Cuidador.id == cuidador_id).first()
